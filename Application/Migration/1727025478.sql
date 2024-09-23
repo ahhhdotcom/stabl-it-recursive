@@ -1,0 +1,1 @@
+UPDATE posts SET parent_id = id;

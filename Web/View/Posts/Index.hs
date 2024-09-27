@@ -7,6 +7,8 @@ instance View IndexView where
     html IndexView { .. } = [hsx|
         {breadcrumb}
 
+        <!-- {currentUser.email} -->
+
         <h1>Index<a href={ NewPostAction Nothing } class="btn btn-primary ms-4">+ New</a></h1>
         <div class="table-responsive">
             <table class="table">

@@ -24,6 +24,7 @@ instance Controller PostsController where
                     Just x -> ((case (fromText x) of
                                     Just y -> newRecord
                                                 |> set #parentId (Just y)
+                                                |> set #author (currentUser.email)
                                     Nothing ->  newRecord
                                 ))
                     Nothing -> newRecord

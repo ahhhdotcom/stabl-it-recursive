@@ -8,6 +8,7 @@ instance View ShowView where
     html ShowView { .. } = [hsx|
         {breadcrumb}
         <h1>{post.title}</h1>
+        <p>a{post.author}s</p> <br>
         <p>{post.body}</p>
         <p>{post.likes}</p>
         <a href={NewPostAction (Just (post.id |> show))}>Comment</a> <br>
@@ -15,6 +16,7 @@ instance View ShowView where
         <a href={LikePost post.id }>Upvote</a> <br>
         <a href={DislikePost post.id }>Downvote</a>
 
+    
 
         <div>{forEach comments renderPost}</div>
 

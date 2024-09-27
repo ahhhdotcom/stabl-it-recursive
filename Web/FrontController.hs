@@ -20,7 +20,7 @@ instance FrontController WebApplication where
         -- Generator Marker
         , parseRoute @UsersController
         , parseRoute @PostsController
-        , parseRoute @SessionsController -- <--------------- add this
+        , parseRoute @SessionsController
 
         ]
 

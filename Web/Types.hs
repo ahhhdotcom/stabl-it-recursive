@@ -14,7 +14,7 @@ data StaticController = WelcomeAction deriving (Eq, Show, Data)
 
 data PostsController
     = PostsAction
-    | NewPostAction {parentId :: Maybe Text}
+    | NewPostAction {parentId :: Maybe Text }
     | ShowPostAction { postId :: !(Id Post) }
     | CreatePostAction 
     | LikePost {postId :: !(Id Post)}
@@ -34,7 +34,7 @@ data SessionsController
 
 
 instance HasNewSessionUrl User where
-    newSessionUrl _ = "/NewSession"
+    newSessionUrl _ = ""
 
 type instance CurrentUserRecord = User
 
@@ -46,4 +46,16 @@ data UsersController
     | EditUserAction { userId :: !(Id User) }
     | UpdateUserAction { userId :: !(Id User) }
     | DeleteUserAction { userId :: !(Id User) }
+    deriving (Eq, Show, Data)
+
+
+
+data UserReactionsController
+    = UserReactionsAction
+    | NewUserReactionAction
+    | ShowUserReactionAction { userReactionId :: !(Id UserReaction) }
+    | CreateUserReactionAction { userId :: !(Id User), postId :: !(Id Post) }
+    | EditUserReactionAction { userReactionId :: !(Id UserReaction) }
+    | UpdateUserReactionAction { userReactionId :: !(Id UserReaction) }
+    | DeleteUserReactionAction { userReactionId :: !(Id UserReaction) }
     deriving (Eq, Show, Data)

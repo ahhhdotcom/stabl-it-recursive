@@ -7,9 +7,14 @@ instance View IndexView where
     html IndexView { .. } = [hsx|
         {breadcrumb}
 
-        <!-- {currentUser.email} -->
+        
 
         <h1>Index<a href={ NewPostAction Nothing } class="btn btn-primary ms-4">+ New</a></h1>
+
+                <a class="js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+
+
+
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -29,11 +34,13 @@ instance View IndexView where
             breadcrumb = renderBreadcrumb
                 [ breadcrumbLink "Posts" PostsAction
                 ]
+            
+        
 
 renderPost :: Post -> Html
 renderPost post = [hsx|
     <tr>
-        <td>{post.body}</td>
+        <td>{post.title}</td>
         <td><a href={ShowPostAction post.id}>Show</a></td>
         <td><a href={EditPostAction post.id} class="text-muted">Edit</a></td>
         <td><a href={DeletePostAction post.id} class="js-delete text-muted">Delete</a></td>

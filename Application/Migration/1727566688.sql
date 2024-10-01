@@ -1,0 +1,4 @@
+DROP INDEX user_reactions_post_id_index;
+DROP INDEX user_reactions_user_id_index;
+ALTER TABLE user_reactions DROP CONSTRAINT user_reactions_ref_post_id;
+ALTER TABLE user_reactions DROP CONSTRAINT user_reactions_ref_user_id;

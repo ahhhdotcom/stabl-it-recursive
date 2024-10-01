@@ -1,6 +1,7 @@
 module Web.View.Posts.Show where
 import Web.View.Prelude
 import Web.View.Posts.New
+import Text.Blaze.Html5.Attributes (placeholder)
 
 data ShowView = ShowView { post :: Post, comments :: [Post] }
 
@@ -8,13 +9,31 @@ instance View ShowView where
     html ShowView { .. } = [hsx|
         {breadcrumb}
         <h1>{post.title}</h1>
-        <p>a{post.author}s</p> <br>
+        <p>{post.author}</p> <br>
         <p>{post.body}</p>
         <p>{post.likes}</p>
-        <a href={NewPostAction (Just (post.id |> show))}>Comment</a> <br>
+        <a href={NewPostAction (Just (post.id |> show)) }>Comment</a> <br>
 
-        <a href={LikePost post.id }>Upvote</a> <br>
-        <a href={DislikePost post.id }>Downvote</a>
+            <form method="POST" action={LikePost post.id}>
+                <button type="submit" >
+                    Upvote
+                </button>
+            </form>
+
+            <form method="POST" action={DislikePost post.id }>
+                <button type="submit" >
+                    Downvote
+                </button>
+            </form>
+
+
+    
+
+
+    
+
+
+
 
     
 
@@ -50,3 +69,5 @@ renderPost showPost = [hsx|
 
 
 |]
+
+

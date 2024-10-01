@@ -1,6 +1,7 @@
 module Web.View.Sessions.New where
 import Web.View.Prelude
 import IHP.AuthSupport.View.Sessions.New
+import IHP.IDE.ToolServer.Types (CodeGenController(CreateActionAction))
 
 instance View (NewView User) where
     html NewView { .. } = [hsx|

@@ -8,6 +8,10 @@ import Web.View.Posts.Edit
 import Web.View.Posts.Show
 import Text.XML.Cursor (parent)
 import Data.UUID
+import Web.Controller.UserReactions
+
+
+touuid (Id uuid) = uuid
 
 
 instance Controller PostsController where
@@ -26,8 +30,10 @@ instance Controller PostsController where
                                                 |> set #parentId (Just y)
                                                 |> set #author (currentUser.email)
                                     Nothing ->  newRecord
+                                                    |> set #author (currentUser.email)
                                 ))
                     Nothing -> newRecord
+                                    |> set #author (currentUser.email)
                 
         render NewView { .. }
 
@@ -75,25 +81,108 @@ instance Controller PostsController where
 
 
     action LikePost { postId } = do
+        userReaction <- query @UserReaction
+            |> filterWhere (#userId, (currentUser.id))
+            |> filterWhere (#postId, (postId)) 
+            |> filterWhere (#reaction, 1)
+            |> fetchOneOrNothing
+
+        userReactionOpposite <- query @UserReaction
+            |> filterWhere (#userId, (currentUser.id))
+            |> filterWhere (#postId, (postId)) 
+            |> filterWhere (#reaction, -1)
+            |> fetchOneOrNothing
+
+        
+
 
         updatePost <- fetch ( postId )
-        updatePost
-            |> set #likes (updatePost.likes + 1)
-            |> updateRecord
+        case (userReaction) of
+            Just x -> updatePost 
+                            |> set #likes (updatePost.likes - 1)
+                            |> updateRecord
+            Nothing -> case (userReactionOpposite) of
+                            Just y -> updatePost
+                                        |> set #likes (updatePost.likes + 2)
+                                        |> updateRecord
+                            Nothing -> (updatePost
+                                            |> set #likes (updatePost.likes + 1)
+                                            |> updateRecord
+                                        )
 
-        redirectTo ShowPostAction { ..}   
+
+
+        case userReactionOpposite of 
+            Just xx -> deleteRecord xx
+            Nothing -> pure ()
+
+
+
+        case userReaction of
+            Just x -> (deleteRecord x)
+            Nothing -> newRecord @UserReaction
+                                |> set #postId (postId)
+                                |> set #userId (currentUser.id)
+                                |> set #reaction (1)
+                                |> buildUserReaction
+                                |> ifValid \case
+                                    Left userReaction -> redirectTo ShowPostAction { postId }
+                                    Right userReaction -> do
+                                        userReaction <- userReaction |> createRecord
+                                        redirectTo ShowPostAction { postId }
+        
+
+        redirectTo ShowPostAction { .. }    
+ 
 
 
     action DislikePost { postId } = do
-        updatePost <- fetch ( postId )
-        updatePost
-            |> set #likes (case updatePost.likes > 0 of
-                                True -> updatePost.likes - 1
-                                False -> updatePost.likes
-                            )
-            |> updateRecord
 
+        userReaction <- query @UserReaction
+            |> filterWhere (#userId, (currentUser.id))
+            |> filterWhere (#postId, (postId)) 
+            |> filterWhere (#reaction, -1)
+            |> fetchOneOrNothing
+
+        userReactionOpposite <- query @UserReaction
+            |> filterWhere (#userId, (currentUser.id))
+            |> filterWhere (#postId, (postId)) 
+            |> filterWhere (#reaction, 1)
+            |> fetchOneOrNothing
+
+        updatePost <- fetch ( postId )
+        case (userReaction) of
+            Just x -> updatePost 
+                            |> set #likes (updatePost.likes + 1)
+                            |> updateRecord
+            Nothing -> case (userReactionOpposite) of
+                            Just y -> updatePost
+                                        |> set #likes (updatePost.likes - 2)
+                                        |> updateRecord
+                            Nothing -> updatePost
+                                        |> set #likes (updatePost.likes - 1)
+                                        |> updateRecord
+
+
+        case userReactionOpposite of 
+            Just x -> deleteRecord x
+            Nothing -> pure ()
+
+        case userReaction of
+            Just x -> (deleteRecord x)
+            Nothing -> newRecord @UserReaction
+                                |> set #postId (postId)
+                                |> set #userId (currentUser.id)
+                                |> set #reaction (-1)
+                                |> buildUserReaction
+                                |> ifValid \case
+                                    Left xx -> redirectTo ShowPostAction { postId }
+                                    Right xx -> do
+                                        xx <- xx |> createRecord
+                                        redirectTo ShowPostAction {postId}
         
+
+
 
         redirectTo ShowPostAction { ..}        
 

@@ -11,6 +11,7 @@ instance View NewView where
         <h1>New Post</h1>
         {renderForm post}
 
+
     |]
         where
             breadcrumb = renderBreadcrumb

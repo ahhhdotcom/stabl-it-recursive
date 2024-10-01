@@ -18,7 +18,7 @@ instance View EditView where
 renderForm :: Post -> Html
 renderForm post = formFor post [hsx|
     {(textField #title)}
-    {(textField #author)}
+    {(hiddenField #author)}
     {(textField #likes)}
     {(textField #parentId)}
     {submitButton}

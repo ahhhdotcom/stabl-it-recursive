@@ -8,9 +8,7 @@ data WelcomeView = WelcomeView
 
 instance View WelcomeView where
     html WelcomeView = [hsx|
-        <a href="/NewSession">sdf</a>
+        <a href="/NewSession">Login</a>
+                        <a class="js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
 
-
-        <a class="js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
-
-|]
+    |]

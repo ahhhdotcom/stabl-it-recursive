@@ -5,6 +5,10 @@ import Web.Controller.Prelude
 import Web.View.Layout (defaultLayout)
 
 -- Controller Imports
+import Web.Controller.UserReactions
+import Web.Controller.UserReactions
+import Web.Controller.UserReactions
+import Web.Controller.UserReactions
 import Web.Controller.Users
 import Web.Controller.Posts
 import Web.Controller.Posts
@@ -18,6 +22,10 @@ instance FrontController WebApplication where
     controllers = 
         [ startPage WelcomeAction
         -- Generator Marker
+        , parseRoute @UserReactionsController
+        , parseRoute @UserReactionsController
+        , parseRoute @UserReactionsController
+        , parseRoute @UserReactionsController
         , parseRoute @UsersController
         , parseRoute @PostsController
         , parseRoute @SessionsController

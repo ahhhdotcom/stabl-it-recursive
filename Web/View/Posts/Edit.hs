@@ -19,7 +19,6 @@ renderForm :: Post -> Html
 renderForm post = formFor post [hsx|
     {(textField #title)}
     {(hiddenField #author)}
-    {(textField #likes)}
     {(textField #parentId)}
     {submitButton}
 

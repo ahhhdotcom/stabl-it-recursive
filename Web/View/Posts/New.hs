@@ -26,7 +26,6 @@ renderForm post =
         {(textField #title)}
         {(hiddenField #author)}
         {(textField #body)}
-        {(hiddenField #likes)}
         {(hiddenField #parentId)}
         {submitButton}
 

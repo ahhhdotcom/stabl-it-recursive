@@ -3,7 +3,7 @@ import Web.View.Prelude
 import Web.View.Posts.New
 import Text.Blaze.Html5.Attributes (placeholder)
 
-data ShowView = ShowView { post :: Post, comments :: [Post] }
+data ShowView = ShowView { post :: Post, comments :: [Post], likes :: Int}
 
 instance View ShowView where
     html ShowView { .. } = [hsx|
@@ -11,7 +11,7 @@ instance View ShowView where
         <h1>{post.title}</h1>
         <p>{post.author}</p> <br>
         <p>{post.body}</p>
-        <p>{post.likes}</p>
+        <p>{likes}</p>
         <a href={NewPostAction (Just (post.id |> show)) }>Comment</a> <br>
 
             <form method="POST" action={LikePost post.id}>
@@ -63,8 +63,9 @@ renderPost :: Post -> Html
 renderPost showPost = [hsx|
     <div style="border: solid black 1px; padding: 1%; margin: 1%; width: 50%;"> 
     <a href={ShowPostAction showPost.id}>{showPost.title}</a>
+    <!-- TODO: LIKES -->
     <div>{showPost.body} </div>
-    <div>{showPost.likes}</div>
+    <!-- <div>{showPost.likes}</div> -->
     </div>
 
 

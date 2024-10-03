@@ -38,6 +38,18 @@ instance Controller PostsController where
         render NewView { .. }
 
     action ShowPostAction { postId } = do
+        queryUpvotes <- query @UserReaction
+            |> filterWhere (#postId, (postId)) 
+            |> filterWhere (#reaction, 1)
+            |> fetch
+        
+        queryDownvotes <- query @UserReaction
+            |> filterWhere (#postId, (postId)) 
+            |> filterWhere (#reaction, -1)
+            |> fetch
+        
+        let likes = length queryUpvotes - length queryDownvotes
+
         post <- fetch postId
         comments <- query @Post 
             |> filterWhere (#parentId, Data.UUID.fromText (postId |> show))
@@ -96,19 +108,19 @@ instance Controller PostsController where
         
 
 
-        updatePost <- fetch ( postId )
-        case (userReaction) of
-            Just x -> updatePost 
-                            |> set #likes (updatePost.likes - 1)
-                            |> updateRecord
-            Nothing -> case (userReactionOpposite) of
-                            Just y -> updatePost
-                                        |> set #likes (updatePost.likes + 2)
-                                        |> updateRecord
-                            Nothing -> (updatePost
-                                            |> set #likes (updatePost.likes + 1)
-                                            |> updateRecord
-                                        )
+    --     updatePost <- fetch ( postId )
+    --     case (userReaction) of
+    --         Just x -> updatePost 
+    --                         |> set #likes (updatePost.likes - 1)
+    --                         |> updateRecord
+    --         Nothing -> case (userReactionOpposite) of
+    --                         Just y -> updatePost
+    --                                     |> set #likes (updatePost.likes + 2)
+    --                                     |> updateRecord
+    --                         Nothing -> (updatePost
+    --                                         |> set #likes (updatePost.likes + 1)
+    --                                         |> updateRecord
+    --                                     )
 
 
 
@@ -150,18 +162,18 @@ instance Controller PostsController where
             |> filterWhere (#reaction, 1)
             |> fetchOneOrNothing
 
-        updatePost <- fetch ( postId )
-        case (userReaction) of
-            Just x -> updatePost 
-                            |> set #likes (updatePost.likes + 1)
-                            |> updateRecord
-            Nothing -> case (userReactionOpposite) of
-                            Just y -> updatePost
-                                        |> set #likes (updatePost.likes - 2)
-                                        |> updateRecord
-                            Nothing -> updatePost
-                                        |> set #likes (updatePost.likes - 1)
-                                        |> updateRecord
+    --     updatePost <- fetch ( postId )
+    --     case (userReaction) of
+    --         Just x -> updatePost 
+    --                         |> set #likes (updatePost.likes + 1)
+    --                         |> updateRecord
+    --         Nothing -> case (userReactionOpposite) of
+    --                         Just y -> updatePost
+    --                                     |> set #likes (updatePost.likes - 2)
+    --                                     |> updateRecord
+    --                         Nothing -> updatePost
+    --                                     |> set #likes (updatePost.likes - 1)
+    --                                     |> updateRecord
 
 
         case userReactionOpposite of 
@@ -184,8 +196,13 @@ instance Controller PostsController where
 
 
 
-        redirectTo ShowPostAction { ..}        
+        redirectTo ShowPostAction { .. } 
 
+
+
+
+
+        
 
 buildPost post = post
-    |> fill @'["title", "author", "likes", "parentId", "body"]
+    |> fill @'["title", "author", "parentId", "body"]
